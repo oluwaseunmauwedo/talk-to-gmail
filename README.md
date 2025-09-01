@@ -4,7 +4,11 @@ AI Agent for managing your Gmail account using natural language.
 
 
 
-https://github.com/user-attachments/assets/d026fb6b-59e3-4d2d-a0de-061b0455adb6
+
+https://github.com/user-attachments/assets/087e76a7-28a4-47fc-999a-de448dd1f9f7
+
+
+
 
 
 
