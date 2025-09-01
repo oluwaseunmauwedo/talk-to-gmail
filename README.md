@@ -2,6 +2,12 @@
 
 AI Agent for managing your Gmail account using natural language.
 
+
+
+https://github.com/user-attachments/assets/d026fb6b-59e3-4d2d-a0de-061b0455adb6
+
+
+
 Built with
 
 - [Cloudflare Workers](https://workers.cloudflare.com)
