@@ -1,4 +1,5 @@
 import * as gmailTools from "./gmail";
+import * as calendarTools from "./calendar";
 
 import {
   scheduleTask,
@@ -11,6 +12,7 @@ export const tools = {
   getScheduledTasks,
   cancelScheduledTask,
 
+  // Gmail tools
   getLatestEmails: gmailTools.getLatestEmails,
   getAllEmails: gmailTools.getAllEmails,
   searchEmails: gmailTools.searchEmails,
@@ -29,7 +31,18 @@ export const tools = {
   deleteLatestEmail: gmailTools.deleteLatestEmail,
   markEmailAsReadOrUnread: gmailTools.markEmailAsReadOrUnread,
   manageEmailLabels: gmailTools.manageEmailLabels,
-  listEmailLabels: gmailTools.listEmailLabels
+  listEmailLabels: gmailTools.listEmailLabels,
+
+  // Calendar tools
+  getUpcomingEvents: calendarTools.getUpcomingEvents,
+  getTodayEvents: calendarTools.getTodayEvents,
+  getEventDetails: calendarTools.getEventDetails,
+  searchEvents: calendarTools.searchEvents,
+
+  createEvent: calendarTools.createEvent,
+  scheduleQuickMeeting: calendarTools.scheduleQuickMeeting,
+  updateEvent: calendarTools.updateEvent,
+  deleteEvent: calendarTools.deleteEvent
 };
 
 export type { tools as ToolSet };

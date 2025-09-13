@@ -21,7 +21,12 @@ import {
   getValidGmailToken
 } from "./services/auth";
 import type { Env, GmailApiRequestOptions } from "./types";
-import { ROUTES, GMAIL_API_BASE, SYSTEM_PROMPT } from "./constants";
+import {
+  ROUTES,
+  GMAIL_API_BASE,
+  CALENDAR_API_BASE,
+  SYSTEM_PROMPT
+} from "./constants";
 
 const model = openai("gpt-5-mini");
 
@@ -56,6 +61,33 @@ export class Chat extends AIChatAgent<Env> {
     if (!response.ok) {
       const error = await response.text();
       throw new Error(`Gmail API error: ${response.status} ${error}`);
+    }
+
+    // Handle DELETE requests that might not return JSON
+    if (options?.method === "DELETE") {
+      return response.status === 204 ? {} : response.json();
+    }
+
+    return response.json();
+  }
+
+  async makeCalendarApiRequest(
+    endpoint: string,
+    options?: GmailApiRequestOptions
+  ) {
+    const accessToken = await this.getGmailToken();
+    const response = await fetch(`${CALENDAR_API_BASE}${endpoint}`, {
+      method: options?.method || "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json"
+      },
+      body: options?.body
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(`Calendar API error: ${response.status} ${error}`);
     }
 
     // Handle DELETE requests that might not return JSON

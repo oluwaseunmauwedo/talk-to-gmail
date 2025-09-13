@@ -2,15 +2,7 @@
 
 AI Agent for managing your Gmail account using natural language.
 
-
-
-
 https://github.com/user-attachments/assets/087e76a7-28a4-47fc-999a-de448dd1f9f7
-
-
-
-
-
 
 Built with
 
@@ -25,7 +17,7 @@ Built with
 - [Vite](https://vite.dev)
 
 > [!WARNING]  
-> Experimental Project: This was an experimental project to learn Cloudflare's AI SDK. It is quite functional but use at your own risk.
+> Experimental Project: This is an experimental project to learn Cloudflare's AI SDK. It is quite functional but use at your own risk.
 
 ## ✨ Features
 
@@ -103,6 +95,7 @@ npx wrangler kv:namespace create "GMAIL_TOKENS" --preview
 ```
 
 Update the `wrangler.jsonc` file with your KV namespace IDs:
+
 - Replace `your_kv_namespace_id_here` with the ID from the first command
 - Replace `your_preview_kv_namespace_id_here` with the preview ID from the second command
 

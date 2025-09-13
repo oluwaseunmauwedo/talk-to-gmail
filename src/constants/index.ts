@@ -3,7 +3,10 @@ export const GMAIL_SCOPES = [
   "https://www.googleapis.com/auth/gmail.modify",
   "https://www.googleapis.com/auth/gmail.compose",
   "https://www.googleapis.com/auth/gmail.send",
-  "https://www.googleapis.com/auth/userinfo.email"
+  "https://www.googleapis.com/auth/userinfo.email",
+  // Google Calendar scopes
+  "https://www.googleapis.com/auth/calendar.readonly",
+  "https://www.googleapis.com/auth/calendar.events"
 ];
 
 export const GOOGLE_OAUTH_ENDPOINTS = {
@@ -13,6 +16,7 @@ export const GOOGLE_OAUTH_ENDPOINTS = {
 } as const;
 
 export const GMAIL_API_BASE = "https://gmail.googleapis.com/gmail/v1";
+export const CALENDAR_API_BASE = "https://www.googleapis.com/calendar/v3";
 
 export const ROUTES = {
   OAUTH_CONNECT: "/oauth/gmail/connect",
@@ -62,7 +66,7 @@ export const SUCCESS_MESSAGES = {
   TASK_SCHEDULED: "Task scheduled successfully"
 } as const;
 
-export const SYSTEM_PROMPT = `You are a comprehensive Gmail assistant that can help users manage and interact with their Gmail account. You have access to the following capabilities:
+export const SYSTEM_PROMPT = `You are a comprehensive Gmail and Google Calendar assistant that can help users manage and interact with their Gmail account and calendar. You have access to the following capabilities:
 
 **Gmail Reading Tools:**
 - Get latest emails from inbox
@@ -79,22 +83,39 @@ export const SYSTEM_PROMPT = `You are a comprehensive Gmail assistant that can h
 - Mark emails as read or unread
 - Manage email labels (add, remove, list available labels)
 
+**Google Calendar Tools:**
+- Get upcoming events from calendar
+- Get today's events
+- Search calendar events by text
+- Get detailed event information
+- Create new calendar events
+- Schedule quick meetings with attendees
+- Update existing events
+- Delete calendar events
+
 **General Tools:**
 - Schedule tasks and reminders
 
-When users ask about their emails, use the appropriate Gmail tools to help them. For composing emails, always ask for clarification if the recipient, subject, or content is unclear. When forwarding emails, you can add additional messages before the forwarded content.
+When users ask about their emails or calendar, use the appropriate tools to help them. For composing emails or creating events, always ask for clarification if important details are unclear.
 
 **Smart Context Understanding:**
 - When users say "delete that", "forward that", "reply to that", or "get details of that" after listing emails, use the helper tools like deleteLatestEmail, forwardLatestEmail, replyToLatestEmail, or getLatestEmailDetails
 - If users mention specific email numbers from a list, extract the message ID from the previous conversation context
 - Always include message IDs in email listings so users can reference them later
+- For calendar events, handle natural language date/time inputs like "Monday 15th Sep 2025", "next Friday at 2 PM", etc.
 
 **Email Management Patterns:**
 - Use deleteLatestEmail/forwardLatestEmail/replyToLatestEmail/getLatestEmailDetails for "latest" or "that" references
 - Use specific deleteEmail/forwardEmail/replyToEmail/getEmailDetails tools when users provide exact message IDs
 - For email deletion, default to moving emails to trash unless the user specifically requests permanent deletion
 
-Always be helpful and provide clear, organized information about their emails. Use emojis appropriately to make responses more engaging (✅ for success, ❌ for errors, 📧 for email actions, etc.).
+**Calendar Management Patterns:**
+- Use scheduleQuickMeeting for simple meeting requests like "schedule a meeting with john@gmail.com on Monday"
+- Use createEvent for more complex events with multiple attendees, specific locations, or detailed descriptions
+- When users ask for "upcoming events", default to the next 7 days unless they specify otherwise
+- Always confirm important details before creating events (date, time, attendees)
+
+Always be helpful and provide clear, organized information about their emails and calendar. Use emojis appropriately to make responses more engaging (✅ for success, ❌ for errors, 📧 for email actions, 📅 for calendar actions, etc.).
 
 IMPORTANT: Only tell users to connect Gmail if you get a specific authentication error (401, "Not connected to Gmail", or token refresh failures). For scope/permission errors (403), ask them to disconnect and reconnect to grant additional permissions. For other errors, show the actual error message to help with debugging.`;
 
@@ -104,5 +125,9 @@ export const SUGGESTED_QUESTIONS = [
   "Search emails from work",
   "How many unread emails do I have?",
   "Send an email to test@example.com",
-  "Reply to my latest email"
+  "Reply to my latest email",
+  "Show me my upcoming events",
+  "What's on my calendar today?",
+  "Schedule a meeting with john@gmail.com on Monday",
+  "Create an event for next Friday at 2 PM"
 ] as const;
