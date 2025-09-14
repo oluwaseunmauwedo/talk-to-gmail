@@ -26,19 +26,7 @@ export function EventList({
   const hasMore = maxItems && events.length > maxItems;
 
   if (events.length === 0) {
-    return (
-      <div className="text-center py-8">
-        <div className="text-4xl mb-4">📅</div>
-        <h3 className="text-lg font-medium text-neutral-600 dark:text-neutral-400 mb-2">
-          No events found
-        </h3>
-        <p className="text-sm text-neutral-500">
-          {title
-            ? `No events match your criteria.`
-            : `No upcoming events scheduled.`}
-        </p>
-      </div>
-    );
+    return null; // Don't show anything if no events
   }
 
   const groupEventsByDate = (events: CalendarEvent[]) => {
@@ -81,23 +69,6 @@ export function EventList({
 
   return (
     <div className="space-y-6">
-      {(title || subtitle) && (
-        <div className="border-b border-neutral-200 dark:border-neutral-700 pb-4">
-          {title && (
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-2xl">📅</span>
-              <h2 className="text-xl font-semibold">{title}</h2>
-              <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm rounded-full">
-                {events.length}
-              </span>
-            </div>
-          )}
-          {subtitle && (
-            <p className="text-neutral-600 dark:text-neutral-400">{subtitle}</p>
-          )}
-        </div>
-      )}
-
       {Object.entries(groupedEvents).map(([dateKey, dateEvents]) => (
         <div key={dateKey}>
           {groupByDate && Object.keys(groupedEvents).length > 1 && (

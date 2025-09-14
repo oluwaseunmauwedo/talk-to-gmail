@@ -26,38 +26,11 @@ export function EmailList({
   const hasMore = maxItems && emails.length > maxItems;
 
   if (emails.length === 0) {
-    return (
-      <div className="text-center py-8">
-        <div className="text-4xl mb-4">📧</div>
-        <h3 className="text-lg font-medium text-neutral-600 dark:text-neutral-400 mb-2">
-          No emails found
-        </h3>
-        <p className="text-sm text-neutral-500">
-          {title ? `No emails match your criteria.` : `Your inbox is empty.`}
-        </p>
-      </div>
-    );
+    return null; // Don't show anything if no emails
   }
 
   return (
-    <div className="space-y-4">
-      {(title || subtitle) && (
-        <div className="border-b border-neutral-200 dark:border-neutral-700 pb-4">
-          {title && (
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-2xl">📧</span>
-              <h2 className="text-xl font-semibold">{title}</h2>
-              <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm rounded-full">
-                {emails.length}
-              </span>
-            </div>
-          )}
-          {subtitle && (
-            <p className="text-neutral-600 dark:text-neutral-400">{subtitle}</p>
-          )}
-        </div>
-      )}
-
+    <div className="max-w-[700px]">
       <div className={`space-y-${compact ? "2" : "4"}`}>
         {displayEmails.map((email) => (
           <EmailCard

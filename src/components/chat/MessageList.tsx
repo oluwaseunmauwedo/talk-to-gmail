@@ -222,20 +222,8 @@ export function MessageList({
                         // Skip rendering the card in debug mode
                         if (showDebug) return null;
 
-                        // Check if this tool has completed and returned generative UI data
-                        if (
-                          toolInvocation.state === "result" &&
-                          !needsConfirmation &&
-                          isGenerativeUIResult(toolInvocation.result)
-                        ) {
-                          // Render generative UI instead of the tool invocation card
-                          return renderGenerativeUI(
-                            toolInvocation.result,
-                            `${toolCallId}-${i}-genui`
-                          );
-                        }
-
-                        return (
+                        // Always render the tool invocation card for visibility
+                        const toolCard = (
                           <ToolInvocationCard
                             key={`${toolCallId}-${i}`}
                             toolInvocation={toolInvocation}
@@ -244,6 +232,26 @@ export function MessageList({
                             addToolResult={addToolResult}
                           />
                         );
+
+                        // If tool has completed and returned generative UI data, show both
+                        if (
+                          toolInvocation.state === "result" &&
+                          !needsConfirmation &&
+                          isGenerativeUIResult(toolInvocation.result)
+                        ) {
+                          return (
+                            <div key={`${toolCallId}-${i}-container`} className="space-y-2">
+                              {toolCard}
+                              {renderGenerativeUI(
+                                toolInvocation.result,
+                                `${toolCallId}-${i}-genui`
+                              )}
+                            </div>
+                          );
+                        }
+
+                        // Otherwise, just show the tool invocation card
+                        return toolCard;
                       }
                       return null;
                     })}
