@@ -71,7 +71,7 @@ export function ChatHeader({
             className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100"
           >
             <GmailIcon />
-            {gmailStatus.email}
+            {gmailStatus.email} 
             <CaretDownIcon weight="duotone" size={16} className="ml-1" />
           </Button>
         </DropdownMenu>

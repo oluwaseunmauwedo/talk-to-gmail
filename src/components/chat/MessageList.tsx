@@ -13,6 +13,10 @@ interface MessageListProps {
   messages: Message[];
   showDebug: boolean;
   addToolResult: (args: { toolCallId: string; result: any }) => void;
+  onPopulateInput?: (text: string) => void;
+  onReply?: (messageId: string) => void;
+  onForward?: (messageId: string) => void;
+  onDelete?: (messageId: string) => void;
   messagesEndRef: React.RefObject<HTMLDivElement | null>;
 }
 
@@ -55,7 +59,14 @@ function isGenerativeUIResult(result: unknown): result is GenerativeUIResult {
 }
 
 // Function to render generative UI components based on tool results
-function renderGenerativeUI(result: GenerativeUIResult, key: string) {
+function renderGenerativeUI(
+  result: GenerativeUIResult,
+  key: string,
+  onPopulateInput?: (text: string) => void,
+  onReply?: (messageId: string) => void,
+  onForward?: (messageId: string) => void,
+  onDelete?: (messageId: string) => void
+) {
   if (!isGenerativeUIResult(result)) return null;
 
   switch (result.type) {
@@ -68,6 +79,10 @@ function renderGenerativeUI(result: GenerativeUIResult, key: string) {
             subtitle={result.subtitle}
             compact={result.compact}
             maxItems={result.maxItems}
+            onPopulateInput={onPopulateInput}
+            onReply={onReply}
+            onForward={onForward}
+            onDelete={onDelete}
           />
         </div>
       );
@@ -79,6 +94,10 @@ function renderGenerativeUI(result: GenerativeUIResult, key: string) {
             emails={[result.email]}
             title={result.title}
             compact={false}
+            onPopulateInput={onPopulateInput}
+            onReply={onReply}
+            onForward={onForward}
+            onDelete={onDelete}
           />
         </div>
       ) : null;
@@ -136,6 +155,10 @@ export function MessageList({
   messages,
   showDebug,
   addToolResult,
+  onPopulateInput,
+  onReply,
+  onForward,
+  onDelete,
   messagesEndRef
 }: MessageListProps) {
   return (
@@ -244,7 +267,11 @@ export function MessageList({
                               {toolCard}
                               {renderGenerativeUI(
                                 toolInvocation.result,
-                                `${toolCallId}-${i}-genui`
+                                `${toolCallId}-${i}-genui`,
+                                onPopulateInput,
+                                onReply,
+                                onForward,
+                                onDelete
                               )}
                             </div>
                           );

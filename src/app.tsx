@@ -64,6 +64,18 @@ export default function Chat() {
             messages={agentMessages}
             showDebug={showDebug}
             addToolResult={addToolResult}
+            onPopulateInput={(text: string) => {
+              handleAgentInputChange({ target: { value: text } } as any);
+            }}
+            onReply={(messageId: string) => {
+              handleAgentInputChange({ target: { value: `Reply to email with ID: ${messageId}` } } as any);
+            }}
+            onForward={(messageId: string) => {
+              handleAgentInputChange({ target: { value: `Forward email with ID: ${messageId}` } } as any);
+            }}
+            onDelete={(messageId: string) => {
+              handleAgentInputChange({ target: { value: `Delete email with ID: ${messageId}` } } as any);
+            }}
             messagesEndRef={messagesEndRef}
           />
         </div>

@@ -9,6 +9,7 @@ interface EmailListProps {
   onReply?: (messageId: string) => void;
   onForward?: (messageId: string) => void;
   onDelete?: (messageId: string) => void;
+  onPopulateInput?: (text: string) => void;
   maxItems?: number;
 }
 
@@ -20,6 +21,7 @@ export function EmailList({
   onReply,
   onForward,
   onDelete,
+  onPopulateInput,
   maxItems
 }: EmailListProps) {
   const displayEmails = maxItems ? emails.slice(0, maxItems) : emails;
@@ -30,7 +32,7 @@ export function EmailList({
   }
 
   return (
-    <div className="max-w-[700px]">
+    <div className="max-w-6xl">
       <div className={`space-y-${compact ? "2" : "4"}`}>
         {displayEmails.map((email) => (
           <EmailCard
@@ -40,6 +42,7 @@ export function EmailList({
             onReply={onReply}
             onForward={onForward}
             onDelete={onDelete}
+            onPopulateInput={onPopulateInput}
           />
         ))}
       </div>
