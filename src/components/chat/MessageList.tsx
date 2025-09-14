@@ -6,6 +6,9 @@ import { MemoizedMarkdown } from "@/components/memoized-markdown";
 import { ToolInvocationCard } from "@/components/tool-invocation-card/ToolInvocationCard";
 import { TOOLS_REQUIRING_CONFIRMATION } from "@/constants";
 
+// Import generative UI components
+import { EmailList, EventList } from "@/components/generative-ui";
+
 interface MessageListProps {
   messages: Message[];
   showDebug: boolean;
@@ -15,6 +18,118 @@ interface MessageListProps {
 
 function formatTime(date: Date) {
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+}
+
+// Import types for proper typing
+import type { EmailContent } from "@/types";
+import type { CalendarEvent } from "@/tools/calendar/types";
+
+// Type for generative UI results
+interface GenerativeUIResult {
+  type: "emails" | "events" | "email_detail" | "event_detail" | "error";
+  emails?: EmailContent[];
+  events?: CalendarEvent[];
+  email?: EmailContent;
+  event?: CalendarEvent;
+  title?: string;
+  subtitle?: string;
+  message?: string;
+  compact?: boolean;
+  maxItems?: number;
+  groupByDate?: boolean;
+}
+
+// Function to check if a tool result contains generative UI data
+function isGenerativeUIResult(result: unknown): result is GenerativeUIResult {
+  if (result === null || typeof result !== "object" || !("type" in result)) {
+    return false;
+  }
+  
+  const resultObj = result as Record<string, unknown>;
+  return (
+    typeof resultObj.type === "string" &&
+    ["emails", "events", "email_detail", "event_detail", "error"].includes(
+      resultObj.type,
+    )
+  );
+}
+
+// Function to render generative UI components based on tool results
+function renderGenerativeUI(result: GenerativeUIResult, key: string) {
+  if (!isGenerativeUIResult(result)) return null;
+
+  switch (result.type) {
+    case "emails":
+      return (
+        <div key={key} className="my-4">
+          <EmailList
+            emails={result.emails || []}
+            title={result.title}
+            subtitle={result.subtitle}
+            compact={result.compact}
+            maxItems={result.maxItems}
+          />
+        </div>
+      );
+
+    case "email_detail":
+      return result.email ? (
+        <div key={key} className="my-4">
+          <EmailList
+            emails={[result.email]}
+            title={result.title}
+            compact={false}
+          />
+        </div>
+      ) : null;
+
+    case "events":
+      return (
+        <div key={key} className="my-4">
+          <EventList
+            events={result.events || []}
+            title={result.title}
+            subtitle={result.subtitle}
+            compact={result.compact}
+            maxItems={result.maxItems}
+            groupByDate={result.groupByDate}
+          />
+        </div>
+      );
+
+    case "event_detail":
+      return result.event ? (
+        <div key={key} className="my-4">
+          <EventList
+            events={[result.event]}
+            title={result.title}
+            compact={false}
+          />
+        </div>
+      ) : null;
+
+    case "error":
+      return (
+        <div key={key} className="my-4">
+          <Card className="p-4 border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">⚠️</span>
+              <div>
+                <h3 className="font-semibold text-red-800 dark:text-red-200 mb-2">
+                  Error
+                </h3>
+                <p className="text-red-700 dark:text-red-300">
+                  {result.message}
+                </p>
+              </div>
+            </div>
+          </Card>
+        </div>
+      );
+
+    default:
+      return null;
+  }
 }
 
 export function MessageList({
@@ -106,6 +221,19 @@ export function MessageList({
 
                         // Skip rendering the card in debug mode
                         if (showDebug) return null;
+
+                        // Check if this tool has completed and returned generative UI data
+                        if (
+                          toolInvocation.state === "result" &&
+                          !needsConfirmation &&
+                          isGenerativeUIResult(toolInvocation.result)
+                        ) {
+                          // Render generative UI instead of the tool invocation card
+                          return renderGenerativeUI(
+                            toolInvocation.result,
+                            `${toolCallId}-${i}-genui`
+                          );
+                        }
 
                         return (
                           <ToolInvocationCard

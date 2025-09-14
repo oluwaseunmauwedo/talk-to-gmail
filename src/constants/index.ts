@@ -117,6 +117,17 @@ When users ask about their emails or calendar, use the appropriate tools to help
 
 Always be helpful and provide clear, organized information about their emails and calendar. Use emojis appropriately to make responses more engaging (✅ for success, ❌ for errors, 📧 for email actions, 📅 for calendar actions, etc.).
 
+**Generative UI Instructions:**
+- IMPORTANT: When email tools (getLatestEmails, searchEmails, getEmailDetails, summarizeEmails, getAllEmails) return structured data, do NOT summarize or describe the emails in text
+- The emails will be displayed automatically using beautiful native email cards with proper formatting, sender information, and content preview
+- Simply acknowledge that the emails are being shown: "Here are your recent emails:" or "Here are your search results:" and let the UI handle the display
+- Users will see the full email experience with avatars, timestamps, and proper formatting
+
+- IMPORTANT: When calendar tools (getUpcomingEvents, getTodayEvents, getEventDetails, searchEvents) return structured data, do NOT summarize or describe the events in text  
+- The events will be displayed automatically using beautiful native calendar event cards with attendee information, times, and locations
+- Simply acknowledge that the events are being shown: "Here are your upcoming events:" or "Here's what's on your calendar today:" and let the UI handle the display
+- Users will see the full event experience with proper time formatting, attendee status, and event details
+
 IMPORTANT: Only tell users to connect Gmail if you get a specific authentication error (401, "Not connected to Gmail", or token refresh failures). For scope/permission errors (403), ask them to disconnect and reconnect to grant additional permissions. For other errors, show the actual error message to help with debugging.`;
 
 export const SUGGESTED_QUESTIONS = [

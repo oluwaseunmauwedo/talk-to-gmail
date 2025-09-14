@@ -14,6 +14,8 @@ export async function getEmailContent(
   let from = "";
   let date = "";
   let body = "";
+  let htmlBody = "";
+  let isHtml = false;
 
   const headers = message.payload?.headers || [];
   for (const header of headers) {
@@ -22,26 +24,39 @@ export async function getEmailContent(
     if (header.name === "Date") date = header.value;
   }
 
-  function extractTextFromPart(part: any): string {
+  function extractContentFromPart(part: any): { text: string; html: string; hasHtml: boolean } {
+    let text = "";
+    let html = "";
+    let hasHtml = false;
+
     if (part.mimeType === "text/plain" && part.body?.data) {
-      return atob(part.body.data.replace(/-/g, "+").replace(/_/g, "/"));
-    }
-    if (part.mimeType === "text/html" && part.body?.data) {
-      const html = atob(part.body.data.replace(/-/g, "+").replace(/_/g, "/"));
-      // Simple HTML to text conversion (remove tags)
-      return html
+      text = atob(part.body.data.replace(/-/g, "+").replace(/_/g, "/"));
+    } else if (part.mimeType === "text/html" && part.body?.data) {
+      html = atob(part.body.data.replace(/-/g, "+").replace(/_/g, "/"));
+      hasHtml = true;
+      // Also extract text version for fallback
+      text = html
         .replace(/<[^>]*>/g, "")
         .replace(/&nbsp;/g, " ")
-        .replace(/&amp;/g, "&");
+        .replace(/&amp;/g, "&")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">")
+        .replace(/&quot;/g, '"');
+    } else if (part.parts) {
+      const results = part.parts.map(extractContentFromPart);
+      text = results.map((r: { text: string; html: string; hasHtml: boolean }) => r.text).join("\n");
+      html = results.map((r: { text: string; html: string; hasHtml: boolean }) => r.html).filter((h: string) => h).join("\n");
+      hasHtml = results.some((r: { text: string; html: string; hasHtml: boolean }) => r.hasHtml);
     }
-    if (part.parts) {
-      return part.parts.map(extractTextFromPart).join("\n");
-    }
-    return "";
+
+    return { text, html, hasHtml };
   }
 
   if (message.payload) {
-    body = extractTextFromPart(message.payload);
+    const content = extractContentFromPart(message.payload);
+    body = content.text.trim();
+    htmlBody = content.html;
+    isHtml = content.hasHtml;
   }
 
   return {
@@ -49,8 +64,10 @@ export async function getEmailContent(
     subject,
     from,
     date,
-    body: body.trim(),
-    snippet: message.snippet || ""
+    body,
+    snippet: message.snippet || "",
+    htmlBody,
+    isHtml
   };
 }
 

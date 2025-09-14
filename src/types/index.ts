@@ -34,6 +34,8 @@ export interface EmailContent {
   date: string;
   body: string;
   snippet: string;
+  htmlBody?: string;
+  isHtml?: boolean;
 }
 
 export interface GmailMessage {
