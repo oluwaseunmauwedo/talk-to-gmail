@@ -90,8 +90,8 @@ GOOGLE_REDIRECT_URI=http://localhost:5173/oauth/gmail/callback
 4. **Create KV namespace for token storage**:
 
 ```bash
-npx wrangler kv:namespace create "GMAIL_TOKENS"
-npx wrangler kv:namespace create "GMAIL_TOKENS" --preview
+npx wrangler kv namespace create "GMAIL_TOKENS"
+npx wrangler kv namespace create "GMAIL_TOKENS" --preview
 ```
 
 Update the `wrangler.jsonc` file with your KV namespace IDs:
